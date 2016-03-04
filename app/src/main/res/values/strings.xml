@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sebuku</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgotpass"><u>Forgot Password?</u></string>
+    <string name="copyright">\u00A9 2016 - EduFi Indonesia</string>
+    <string name="edufi">EduFi</string>
 </resources>
