@@ -45,8 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email = editEmail.getText().toString();
                 String password = editPassword.getText().toString();
 
-                AsyncLogin login = new AsyncLogin(LoginActivity.this);
-                login.execute(email, password);
+                new AsyncLogin(LoginActivity.this).execute(email, password);
             }
         });
     }
