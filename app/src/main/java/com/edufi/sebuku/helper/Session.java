@@ -6,16 +6,10 @@ package com.edufi.sebuku.helper;
 public class Session {
 
     private int user_id;
-    private String username;
+    private String fullname;
+    private String email;
     private String token;
-    private boolean loggedIn;
-
-    public Session(int user_id, String username, String token, boolean isLoggedIn) {
-        this.user_id = user_id;
-        this.username = username;
-        this.token = token;
-        this.loggedIn = isLoggedIn;
-    }
+    private boolean status;
 
     public int getUser_id() {
         return user_id;
@@ -25,12 +19,20 @@ public class Session {
         this.user_id = user_id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getToken() {
@@ -41,11 +43,11 @@ public class Session {
         this.token = token;
     }
 
-    public boolean isLoggedIn() {
-        return loggedIn;
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setIsLoggedIn(boolean isLoggedIn) {
-        this.loggedIn = isLoggedIn;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
