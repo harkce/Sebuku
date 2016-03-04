@@ -2,8 +2,12 @@ package com.edufi.sebuku.helper;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Handler;
+import android.widget.Toast;
+
+import com.edufi.sebuku.activity.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by basisdata on 3/4/2016.
+ * Created by habibfikri on 3/4/2016.
  */
 public class AsyncLogin extends AsyncTask<String, Void, Void> {
 
@@ -74,6 +78,7 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         setEmail(params[0]);
         setPassword(params[1]);
+        Handler handler = new Handler(context.getMainLooper());
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(HOST + "/nbcuvuyswdkajdh");
@@ -89,9 +94,29 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
 
             JSONObject reader = new JSONObject(getResponse());
             String status = reader.getString("status");
-            Log.i("Response", getResponse());
-            Log.i("Status", status);
+            final String message = reader.getString("message");
+            if (status.equals("true")) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         } catch (IOException | JSONException ex) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Error occured", Toast.LENGTH_LONG).show();
+                }
+            });
             ex.printStackTrace();
         }
         return null;
@@ -100,5 +125,23 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         dialog.dismiss();
+        try {
+            JSONObject reader = new JSONObject(getResponse());
+            if (reader.getString("status").equals("true")) {
+                Session session = new Session();
+                session.setUser_id(reader.getInt("user_id"));
+                session.setFullname(reader.getString("fullname"));
+                session.setEmail(reader.getString("email"));
+                session.setToken(reader.getString("token"));
+                session.setStatus(true);
+
+                DBHandler db = new DBHandler(context);
+                db.login(session);
+
+                context.startActivity(new Intent(context, MainActivity.class));
+            }
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
     }
 }
