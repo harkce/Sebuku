@@ -37,8 +37,6 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
     private String password;
     private String response;
 
-    private final String HOST = "http://sebuku.vidukasi.com";
-
     public String getEmail() {
         return email;
     }
@@ -70,7 +68,8 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        dialog.setMessage("Logging in...");
+        dialog.setTitle("Login");
+        dialog.setMessage("Mohon tunggu...");
         dialog.show();
     }
 
@@ -81,7 +80,7 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
         Handler handler = new Handler(context.getMainLooper());
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(HOST + "/nbcuvuyswdkajdh");
+            HttpPost httpPost = new HttpPost(Constant.HOST + "/nbcuvuyswdkajdh");
             List<NameValuePair> nameValuePairs = new ArrayList<>();
             nameValuePairs.add(new BasicNameValuePair("email", getEmail()));
             nameValuePairs.add(new BasicNameValuePair("password", getPassword()));
@@ -94,29 +93,22 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
 
             JSONObject reader = new JSONObject(getResponse());
             String status = reader.getString("status");
-            final String message = reader.getString("message");
             if (status.equals("true")) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, Constant.GREETINGS, Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, Constant.LOGINFAILED, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         } catch (IOException | JSONException ex) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, "Error occured", Toast.LENGTH_LONG).show();
-                }
-            });
             ex.printStackTrace();
         }
         return null;
@@ -140,7 +132,14 @@ public class AsyncLogin extends AsyncTask<String, Void, Void> {
 
                 context.startActivity(new Intent(context, MainActivity.class));
             }
-        } catch (JSONException ex) {
+        } catch (Exception ex) {
+            Handler handler = new Handler(context.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, Constant.ERRORMSG, Toast.LENGTH_LONG).show();
+                }
+            });
             ex.printStackTrace();
         }
     }
